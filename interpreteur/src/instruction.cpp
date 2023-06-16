@@ -225,10 +225,10 @@ void initInstructionTable()
 					ROUTINE COMMAND
 	======================================= */
 
-	AddInstruction( "NONE", "", [](){
+	AddInstruction( "NONE", "N", [](){
 	});
 
-	AddInstruction( "QUIT", "", [](){
+	AddInstruction( "QUIT", "N", [](){
 		emulator.run = false;
 	});
 
@@ -244,7 +244,7 @@ void initInstructionTable()
 		cout << (void *)( *str );
 	});*/
 
-	AddInstruction( "PRINT", "", [](){
+	AddInstruction( "PRINT", "N", [](){
 
 		cout  << "hello word\n";
 	});

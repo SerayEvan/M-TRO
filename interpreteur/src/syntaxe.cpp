@@ -21,7 +21,6 @@ list<InstructToken> tokenize(list<string> content)
 
 	for (auto ligne = content.begin(); ligne != content.end(); ligne++)
 	{
-
 		vector<string> argue = split(*ligne);
 
 		InstructToken instructToken;
@@ -160,61 +159,65 @@ void binPrograme( list<InstructToken> tokens, void* prog )
 		*( (uint16_t*)prog ) = token->instrcution.id;
 		prog += 2;
 
-		auto input = split(token->instrcution.inputSyntaxe);
-
-		if (input.size() != token->param.size())
+		if (token->instrcution.inputSyntaxe != "N")
 		{
-			cout << "Nombre d'argument en désacord avec ceux requis\n";
-			return;
-		}
 
-		for (int i = 0; i <= input.size(); i+=1)
-		{
-			if ( input[i] == "I8") {
-				binInt<int8_t>( prog, token->param[i] );
-				prog += SIZEOF_I8;
-			} else if ( input[i] == "I16") {
-				binInt<int16_t>( prog, token->param[i] );
-				prog += SIZEOF_I16;
-			} else if ( input[i] == "I32") {
-				binInt<int32_t>( prog, token->param[i] );
-				prog += SIZEOF_I32;
-			} else if ( input[i] == "I64") {
-				binInt<int64_t>( prog, token->param[i] );
-				prog += SIZEOF_I64;
+			auto input = split(token->instrcution.inputSyntaxe);
 
-			} else if ( input[i] == "UI8") {
-				binInt<uint8_t>( prog, token->param[i] );
-				prog += SIZEOF_UI8;
-			} else if ( input[i] == "UI16") {
-				binInt<uint16_t>( prog, token->param[i] );
-				prog += SIZEOF_UI16;
-			} else if ( input[i] == "UI32") {
-				binInt<uint32_t>( prog, token->param[i] );
-				prog += SIZEOF_UI32;
-			} else if ( input[i] == "UI64") {
-				binInt<uint64_t>( prog, token->param[i] );
-				prog += SIZEOF_UI64;
+			if (input.size() != token->param.size())
+			{
+				cout << "Nombre d'argument en désacord avec ceux requis\n";
+				return;
+			}
 
-			} else if ( input[i] == "F") {
-				binFloat( prog, token->param[i] );
-				prog += SIZEOF_F;
+			for (int i = 0; i <= input.size(); i+=1)
+			{
+				if ( input[i] == "I8") {
+					binInt<int8_t>( prog, token->param[i] );
+					prog += SIZEOF_I8;
+				} else if ( input[i] == "I16") {
+					binInt<int16_t>( prog, token->param[i] );
+					prog += SIZEOF_I16;
+				} else if ( input[i] == "I32") {
+					binInt<int32_t>( prog, token->param[i] );
+					prog += SIZEOF_I32;
+				} else if ( input[i] == "I64") {
+					binInt<int64_t>( prog, token->param[i] );
+					prog += SIZEOF_I64;
 
-			} else if ( input[i] == "D") {
-				binDouble( prog, token->param[i] );
-				prog += SIZEOF_D;
+				} else if ( input[i] == "UI8") {
+					binInt<uint8_t>( prog, token->param[i] );
+					prog += SIZEOF_UI8;
+				} else if ( input[i] == "UI16") {
+					binInt<uint16_t>( prog, token->param[i] );
+					prog += SIZEOF_UI16;
+				} else if ( input[i] == "UI32") {
+					binInt<uint32_t>( prog, token->param[i] );
+					prog += SIZEOF_UI32;
+				} else if ( input[i] == "UI64") {
+					binInt<uint64_t>( prog, token->param[i] );
+					prog += SIZEOF_UI64;
 
-			} else if ( input[i] == "C") {
-				binChar( prog, token->param[i] );
-				prog += SIZEOF_C;
+				} else if ( input[i] == "F") {
+					binFloat( prog, token->param[i] );
+					prog += SIZEOF_F;
 
-			} else if ( input[i] == "PI") {
-				binInt<uint32_t>( prog, token->param[i] );
-				prog += SIZEOF_PI;
+				} else if ( input[i] == "D") {
+					binDouble( prog, token->param[i] );
+					prog += SIZEOF_D;
 
-			} else if ( input[i] == "PR") {
-				binInt<uint32_t>( prog, token->param[i] );
-				prog += SIZEOF_PR;
+				} else if ( input[i] == "C") {
+					binChar( prog, token->param[i] );
+					prog += SIZEOF_C;
+
+				} else if ( input[i] == "PI") {
+					binInt<uint32_t>( prog, token->param[i] );
+					prog += SIZEOF_PI;
+
+				} else if ( input[i] == "PR") {
+					binInt<uint32_t>( prog, token->param[i] );
+					prog += SIZEOF_PR;
+				}
 			}
 		}
 	}
