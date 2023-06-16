@@ -4,6 +4,6 @@
 #include "instruction.hpp"
 #include "emulator.hpp"
 
-void run(void* prog, MaterialRestriction material);
+void runProg(void* prog, MaterialRestriction material);
 
 #endif

@@ -2,6 +2,10 @@
 #define INSTRUCT
 
 #include <functional>
+#include <iostream>
+
+#include "split.hpp"
+#include "emulator.hpp"
 
 using namespace std;
 
@@ -26,11 +30,6 @@ typedef function<void()> InstructionFunc;
 
 #define SIZEOF_INTERFUNC 6 // pile translation + instruct pos => 2+4
 
-#include <iostream>
-
-#include "split.hpp"
-#include "emulator.hpp"
-
 struct InstructionData
 {
 	uint16_t id;
@@ -49,10 +48,10 @@ struct InstructionData
 
 };
 
-void InitInstructionTable();
+void initInstructionTable();
 
-InstructionData* instructionTableData;
-InstructionFunc* instructionTable;
-uint16_t numberInstruction = 0;
+extern InstructionData* instructionTableData;
+extern InstructionFunc* instructionTable;
+extern uint16_t numberInstruction;
 
 #endif

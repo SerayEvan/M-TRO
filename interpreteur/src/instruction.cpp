@@ -1,5 +1,9 @@
 #include "instruction.hpp"
 
+InstructionData* instructionTableData;
+InstructionFunc* instructionTable;
+uint16_t numberInstruction = 0;
+
 void AddInstruction( string name, string inputSyntaxe, const InstructionFunc func )
 {
 	instructionTableData[numberInstruction].id = numberInstruction;
@@ -53,41 +57,48 @@ void AddInstruction( string name, string inputSyntaxe, const InstructionFunc fun
 	numberInstruction++;
 }
 
-void InitInstructionTable()
+template<typename T>
+void initInstructionTableJumpEqual(string typeName)
 {
-	numberInstruction = 0;
+	AddInstruction(
+		"JUMP_IF_EQUAL_"+typeName,
+		"PI PI PR",
+		[](){
 
-	instructionTableData = (InstructionData*)malloc( sizeof(InstructionData) * SIZE_INSTRUCTION_TABLE );
-	instructionTable = (InstructionFunc*)malloc( sizeof(InstructionFunc) * SIZE_INSTRUCTION_TABLE );
+			T* var1 = (T*) ( emulator.rPile - *( uint32_t* )emulator.rProg );
+			emulator.rProg += SIZEOF_PI;
+			T* var2 = (T*) ( emulator.rPile - *( uint32_t* )emulator.rProg );
+			emulator.rProg += SIZEOF_PI;
 
-	/* =======================================
-					ROUTINE COMMAND
-	======================================= */
+			uint32_t* posJump = ( uint32_t* )emulator.rProg;
+			emulator.rProg += SIZEOF_PR;
 
-	AddInstruction( "NONE", "", [](){
+			if ( *var1 == *var2 ) {
+				emulator.rProg = emulator.prog + *posJump;
+			}
 	});
 
-	AddInstruction( "QUIT", "", [](){
-		emulator.run = false;
+	AddInstruction(
+		"JUMP_IF_UNEQUAL_"+typeName,
+		"PI PI PR",
+		[](){
+
+			T* var1 = (T*) ( emulator.rPile - *( uint32_t* )emulator.rProg );
+			emulator.rProg += SIZEOF_PI;
+			T* var2 = (T*) ( emulator.rPile - *( uint32_t* )emulator.rProg );
+			emulator.rProg += SIZEOF_PI;
+
+			uint32_t* posJump = ( uint32_t* )emulator.rProg;
+			emulator.rProg += SIZEOF_PR;
+
+			if ( *var1 != *var2 ) {
+				emulator.rProg = emulator.prog + *posJump;
+			}
 	});
+}
 
-	/* =======================================
-					PRINT COMMAND
-	======================================= */
-
-	/*AddInstruction( "PRINT", "PI", [](){
-		
-		char** str = emulator.rPile - ( uint32_t* )emulator.rProg;
-		emulator.rProg += SIZEOF_PI;
-
-		cout << (void *)( *str );
-	});*/
-
-	AddInstruction( "PRINT", "", [](){
-
-		count << "(void *)( *str )\n";
-	});
-
+void initInstructionTableJump()
+{
 	/* =======================================
 					JUMP COMMAND
 	==========================================
@@ -103,7 +114,7 @@ void InitInstructionTable()
 	});
 
 	AddInstruction( "JUMP_VAR", "PI", [](){
-		emulator.rProg = emulator.prog + *(emulator.rPile - *( uint32_t* )emulator.rProg);
+		emulator.rProg = emulator.prog + *( uint32_t* )(emulator.rPile - *( uint32_t* )emulator.rProg);
 	});
 
 
@@ -136,47 +147,10 @@ void InitInstructionTable()
 			}
 	});
 
-	auto funcJumpIfEqual = []<typename T>(){
-
-		T* var1 = emulator.rPile - *( uint32_t* )emulator.rProg;
-		emulator.rProg += SIZEOF_PI;
-
-		T* var2 = emulator.rPile - *( uint32_t* )emulator.rProg;
-		emulator.rProg += SIZEOF_PI;
-
-		uint32_t* posJump = ( uint32_t* )emulator.rProg;
-		emulator.rProg += SIZEOF_PR;
-
-		if ( *var1 == *var2 ) {
-			emulator.rProg = emulator.prog + *posJump;
-		}
-	};
-
-	auto funcJumpIfUnEqual = []<typename T>(){
-
-		T* var1 = emulator.rPile - *( uint32_t* )emulator.rProg;
-		emulator.rProg += SIZEOF_PI;
-
-		T* var2 = emulator.rPile - *( uint32_t* )emulator.rProg;
-		emulator.rProg += SIZEOF_PI;
-
-		uint32_t* posJump = ( uint32_t* )emulator.rProg;
-		emulator.rProg += SIZEOF_PR;
-
-		if ( *var1 != *var2 ) {
-			emulator.rProg = emulator.prog + *posJump;
-		}
-	};
-
-	AddInstruction( "JUMP_IF_EQUAL_8" , "PI PI PR", lambda.template funcJumpIfEqual<int8_t> );
-	AddInstruction( "JUMP_IF_EQUAL_16", "PI PI PR", lambda.template funcJumpIfEqual<int16_t>);
-	AddInstruction( "JUMP_IF_EQUAL_32", "PI PI PR", lambda.template funcJumpIfEqual<int32_t>);
-	AddInstruction( "JUMP_IF_EQUAL_64", "PI PI PR", lambda.template funcJumpIfEqual<int64_t>);
-
-	AddInstruction( "JUMP_IF_UNEQUAL_8" , "PI PI PR", lambda.template funcJumpIfUnEqual<int8_t> );
-	AddInstruction( "JUMP_IF_UNEQUAL_16", "PI PI PR", lambda.template funcJumpIfUnEqual<int16_t>);
-	AddInstruction( "JUMP_IF_UNEQUAL_32", "PI PI PR", lambda.template funcJumpIfUnEqual<int32_t>);
-	AddInstruction( "JUMP_IF_UNEQUAL_64", "PI PI PR", lambda.template funcJumpIfUnEqual<int64_t>);
+	initInstructionTableJumpEqual<int8_t>("8");
+	initInstructionTableJumpEqual<int8_t>("16");
+	initInstructionTableJumpEqual<int8_t>("32");
+	initInstructionTableJumpEqual<int8_t>("64");
 
 	/* =======================================
 	
@@ -206,7 +180,7 @@ void InitInstructionTable()
 
 	AddInstruction("PUSH_PILE_VAR","PI", [](){
 
-		uint16_t* pilePush = emulator.rPile - *( uint32_t* )emulator.rProg;
+		uint16_t* pilePush = ( uint16_t* )( emulator.rPile - *( uint32_t* )emulator.rProg );
 		emulator.rProg += SIZEOF_PI;
 
 		emulator.rPile += SIZEOF_INTERFUNC + *pilePush;
@@ -217,25 +191,63 @@ void InitInstructionTable()
 
 	AddInstruction( "JUMP_FORWARD", "PR", [](){
 
-		*(uint32_t*)(emulator.rPile-3) = emulator.rProg - emulator.prog + SIZEOF_PR;
+		//*(uint32_t*)(emulator.rPile-3) = (emulator.rProg - emulator.prog) + SIZEOF_PR;
 
-		emulator.rProg = emulator.prog + *(uint32_t*)emulator.rProg;
+		emulator.rProg = emulator.prog + *( uint32_t* )emulator.rProg;
 	});
 
 	AddInstruction( "JUMP_FORWARD_VAR", "PI", [](){
 
-		*(uint32_t*)(emulator.rPile-3) = emulator.rProg - emulator.prog + SIZEOF_PI;
+		//*(uint32_t*)(emulator.rPile-3) = (emulator.rProg - emulator.prog) + SIZEOF_PI;
 
-		emulator.rProg = emulator.prog + *(emulator.rPile - *( uint32_t* )emulator.rProg);
+		emulator.rProg = emulator.prog + *( uint32_t* )(emulator.rPile - *( uint32_t* )emulator.rProg);
 	});
 
 	AddInstruction("JUMP_BACKWARD","UI32", [](){
 
-		emulator.rProg = emulator.prog + *(uint32_t*)(emulator.rPile-3);
+		emulator.rProg = emulator.prog + *( uint32_t* )(emulator.rPile-3);
 	});
 
 	AddInstruction("PULL_PILE","UI32", [](){
 
 		emulator.rPile -= *(uint32_t*)(emulator.rPile-1);
 	});
+}
+
+void initInstructionTable()
+{
+	numberInstruction = 0;
+
+	instructionTableData = (InstructionData*)malloc( sizeof(InstructionData) * SIZE_INSTRUCTION_TABLE );
+	instructionTable = (InstructionFunc*)malloc( sizeof(InstructionFunc) * SIZE_INSTRUCTION_TABLE );
+
+	/* =======================================
+					ROUTINE COMMAND
+	======================================= */
+
+	AddInstruction( "NONE", "", [](){
+	});
+
+	AddInstruction( "QUIT", "", [](){
+		emulator.run = false;
+	});
+
+	/* =======================================
+					PRINT COMMAND
+	======================================= */
+
+	/*AddInstruction( "PRINT", "PI", [](){
+		
+		char** str = emulator.rPile - ( uint32_t* )emulator.rProg;
+		emulator.rProg += SIZEOF_PI;
+
+		cout << (void *)( *str );
+	});*/
+
+	AddInstruction( "PRINT", "", [](){
+
+		cout  << "hello word\n";
+	});
+
+	initInstructionTableJump();	
 }

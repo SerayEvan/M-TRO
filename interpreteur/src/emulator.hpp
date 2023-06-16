@@ -1,6 +1,10 @@
 #ifndef EMULATOR
 #define EMULATOR
 
+#include <iostream>
+
+using namespace std;
+
 struct MaterialRestriction
 {
 	uint32_t maxMemoryAloc = 1073741824; // 1 Goi
@@ -29,6 +33,6 @@ struct Emulator
 	MaterialRestriction material;
 };
 
-Emulator emulator;
+extern Emulator emulator;
 
 #endif

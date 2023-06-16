@@ -1,6 +1,7 @@
 #include "interpreter.hpp"
 
-void run( void* prog, MaterialRestriction material )
+
+void runProg( void* prog, MaterialRestriction material )
 {
 	void* instrcution = prog;
 
@@ -14,8 +15,6 @@ void run( void* prog, MaterialRestriction material )
 	emulator.rProg = emulator.prog;
 
 	emulator.meroryAloc = 0;
-
-	InitInstructionTable();
 
 	while ( emulator.run )
 	{
