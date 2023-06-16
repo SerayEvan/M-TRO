@@ -1,0 +1,5 @@
+
+Garde foux a faire
+-> Taille max des var dans une func de 2**16 octet
+-> Depassement de la mémoire autorisé
+-> Depassement de la mémoire de pile autorisé ( /!\ prévoire marge pour le fonc depassement )
