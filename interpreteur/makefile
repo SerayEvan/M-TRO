@@ -5,13 +5,13 @@ TARGET = bin/prog.exe
 CC = g++
 
 # Options de compilation
-CFLAGS = -Wall -Wextra -pedantic -std=c++11
+CFLAGS = -Wall -Wextra -pedantic -std=c++11 -I src
 
 # Répertoire des sources
 SRCDIR = src
 
 # Fichiers sources
-SOURCES = $(wildcard $(SRCDIR)/*.cpp)
+SOURCES = $(wildcard $(SRCDIR)/*.cpp) $(wildcard $(SRCDIR)/*/*.cpp)
 
 # Répertoire des objets
 OBJDIR = obj
@@ -33,3 +33,4 @@ all: $(TARGET)
 # Règle de nettoyage
 clean:
 	rm -f $(OBJDIR)/*.o $(TARGET)
+
