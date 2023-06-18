@@ -1,5 +1,11 @@
 PRINT
-JUMP 10
+
+/ jump classic
+
+JUMP #
+:{
 PRINT
+:}
+
 PRINT
 QUIT
