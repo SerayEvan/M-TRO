@@ -11,7 +11,7 @@ using namespace std;
 enum TypeLigne
 {
 	instruction,
-	balise,
+	macro,
 	comment,
 	none
 };
@@ -21,7 +21,7 @@ struct Ligne
 	TypeLigne type;
 	union {
 		InstructionData instruction;
-		BaliseData balise;
+		MacroInstructionData macro;
 	}
 	list<Argument> argue;
 	uint32_t memorySize;

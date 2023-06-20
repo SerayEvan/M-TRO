@@ -16,6 +16,7 @@ enum ArgumentType
 	TprogPoint, // @point
 	TpilePoint, // $point
 	Tmacro,     // #balise
+	Ttype,      // I8 - I64; U8 - U64; F; D; C; PP; PI
 	Tnone
 };
 
@@ -30,6 +31,7 @@ struct Argument
 		char charValue;
 		uint32_t progPointValue;
 		uint32_t pilePointValue;
+		uint32_t sizeTypeValue;
 	};
 };
 

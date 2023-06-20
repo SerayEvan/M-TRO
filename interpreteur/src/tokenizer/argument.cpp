@@ -286,15 +286,15 @@ bool stringToString( string content, Argument* argue )
 					{
 						vch *= 8;
 
-						if      (content[i_] == '0') {vch += 0;}
-						else if (content[i_] == '1') {vch += 1;}
-						else if (content[i_] == '2') {vch += 2;}
-						else if (content[i_] == '3') {vch += 3;}
-						else if (content[i_] == '4') {vch += 4;}
-						else if (content[i_] == '5') {vch += 5;}
-						else if (content[i_] == '6') {vch += 6;}
-						else if (content[i_] == '7') {vch += 7;}
-						else if (content[i_] == '8') {vch += 8;}
+						if      ( content[i_] == '0' ) { vch += 0; }
+						else if ( content[i_] == '1' ) { vch += 1; }
+						else if ( content[i_] == '2' ) { vch += 2; }
+						else if ( content[i_] == '3' ) { vch += 3; }
+						else if ( content[i_] == '4' ) { vch += 4; }
+						else if ( content[i_] == '5' ) { vch += 5; }
+						else if ( content[i_] == '6' ) { vch += 6; }
+						else if ( content[i_] == '7' ) { vch += 7; }
+						else if ( content[i_] == '8' ) { vch += 8; }
 
 						else {
 							vch = vch/8;
@@ -323,24 +323,87 @@ bool stringToString( string content, Argument* argue )
 	return false;
 }
 
-Argue DecodeArgue(string content)
+bool stringToProgOrPilePoint( string content, Argument* argue )
 {
-	Argue argue;
+	long int val;
+    
+	if (*content.begin() == '@') {
+    	argue->type = ArgumentType::TprogPoint;
+    } else if (*content.begin() == '@') {
+    	argue->type = ArgumentType::TpilePoint;
+    } else {
+    	return false;
+    }
 
+    for (int i = 1; i < content.size(); ++i)
+    {
+		val *= 16;
+
+		if      (content[i_] == '0') {val += 0;}
+		else if (content[i_] == '1') {val += 1;}
+		else if (content[i_] == '2') {val += 2;}
+		else if (content[i_] == '3') {val += 3;}
+		else if (content[i_] == '4') {val += 4;}
+		else if (content[i_] == '5') {val += 5;}
+		else if (content[i_] == '6') {val += 6;}
+		else if (content[i_] == '7') {val += 7;}
+		else if (content[i_] == '8') {val += 8;}
+		else if (content[i_] == '9') {val += 9;}
+		else if (content[i_] == 'a' or content[i_] == 'A') {val += 10;}
+		else if (content[i_] == 'b' or content[i_] == 'B') {val += 11;}
+		else if (content[i_] == 'c' or content[i_] == 'C') {val += 12;}
+		else if (content[i_] == 'd' or content[i_] == 'D') {val += 13;}
+		else if (content[i_] == 'e' or content[i_] == 'E') {val += 14;}
+		else if (content[i_] == 'f' or content[i_] == 'F') {val += 15;}
+    	else {return false;}
+
+    	if (val >= 4294967296)
+    	{
+    		return false;
+    	}
+    }
+
+	argue->progPointValue = val;
+    
+    return true;
+}
+
+bool stringToMacro( string content, Argument* argue )
+{
+	if (*content.begin() == '#')
+	{
+		string text;
+
+	    for (int i = 1; i < content.size()-1; ++i)
+	    {
+	    	text += content[i];
+	    }
+	    
+	    argue->type = ArgumentType::Tmacro;
+		argue->text = text;
+	    
+	    return true;
+	}
+	return false;
+}
+
+bool DecodeArgue(string content, Argument* argue)
+{
 	argue.text = content;
 
-	if ( stringToInt(content) ) {
-		return argue;
-	} else if ( stringToFloatOrInt(content) ) {
-		return argue;
-	} else if ( stringToChar(content) ) {
-		return argue;
-	} else if ( stringToString(content) ) {
-		return argue;
+	if ( stringToInt(content,argue) ) {
+		return true;
+	} else if ( stringToFloatOrInt(content,argue) ) {
+		return true;
+	} else if ( stringToChar(content,argue) ) {
+		return true;
+	} else if ( stringToString(content,argue) ) {
+		return true;
+	} else if ( stringToProgOrPilePoint(content,argue) ) {
+		return true;
+	} else if ( stringToMacro(conten,argue) ) {
+		return true;
 	} else {
+		return false;
 	}
-
-	argue.type = ArgumentType::Tnone;
-
-	return argue;
 }

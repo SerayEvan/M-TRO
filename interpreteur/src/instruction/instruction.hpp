@@ -17,15 +17,15 @@ typedef function<void()> InstructionFunc;
 #define SIZEOF_I16 2
 #define SIZEOF_I32 4
 #define SIZEOF_I64 8
-#define SIZEOF_UI8 1
-#define SIZEOF_UI16 2
-#define SIZEOF_UI32 4
-#define SIZEOF_UI64 8
+#define SIZEOF_U8 1
+#define SIZEOF_U16 2
+#define SIZEOF_U32 4
+#define SIZEOF_U64 8
 #define SIZEOF_F 4
 #define SIZEOF_D 8
 #define SIZEOF_C 1
 #define SIZEOF_P 8// TODO taille pointeur
-#define SIZEOF_PI 4
+#define SIZEOF_PI 2
 #define SIZEOF_PR 4
 
 #define SIZEOF_INTERFUNC 6 // pile translation + instruct pos => 2+4

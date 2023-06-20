@@ -1,3 +1,4 @@
+
 #include "instruction.hpp"
 
 InstructionData* instructionTableData;
@@ -24,14 +25,14 @@ void AddInstruction( string name, string inputSyntaxe, const InstructionFunc fun
 		} else if ( *i == "I64" ) {
 			sizeInstruct += SIZEOF_I64;
 
-		} else if ( *i == "UI8" ) {
-			sizeInstruct += SIZEOF_UI8;
-		} else if ( *i == "UI16" ) {
-			sizeInstruct += SIZEOF_UI16;
-		} else if ( *i == "UI32" ) {
-			sizeInstruct += SIZEOF_UI32;
-		} else if ( *i == "UI64" ) {
-			sizeInstruct += SIZEOF_UI64;
+		} else if ( *i == "U8" ) {
+			sizeInstruct += SIZEOF_U8;
+		} else if ( *i == "U16" ) {
+			sizeInstruct += SIZEOF_U16;
+		} else if ( *i == "U32" ) {
+			sizeInstruct += SIZEOF_U32;
+		} else if ( *i == "U64" ) {
+			sizeInstruct += SIZEOF_U64;
 
 		} else if ( *i == "F" ) {
 			sizeInstruct += SIZEOF_F;
@@ -167,7 +168,7 @@ void initInstructionTableJump()
 
 	======================================= */
 
-	AddInstruction("PUSH_PILE","UI16", [](){
+	AddInstruction("PUSH_PILE","U16", [](){
 
 		uint16_t* pilePush = ( uint16_t* )emulator.rProg;
 		emulator.rProg += SIZEOF_UI16;
@@ -191,24 +192,24 @@ void initInstructionTableJump()
 
 	AddInstruction( "JUMP_FORWARD", "PR", [](){
 
-		*(uint32_t*)(emulator.rPile-3) = (emulator.rProg - emulator.prog) + SIZEOF_PR;
+		*(uint32_t*)(emulator.rPile) = (emulator.rProg - emulator.prog) + SIZEOF_PR;
 
 		emulator.rProg = emulator.prog + *( uint32_t* )emulator.rProg;
 	});
 
-	AddInstruction( "JUMP_FORWARD_VAR", "PI", [](){
+	AddInstruction( "JUMP_FORWARD_VAR", "PI", [](){// pi doit ètre placé aure d'ateinte des argument
 
-		*(uint32_t*)(emulator.rPile-3) = (emulator.rProg - emulator.prog) + SIZEOF_PI;
+		*(uint32_t*)(emulator.rPile) = (emulator.rProg - emulator.prog) + SIZEOF_PI;
 
-		emulator.rProg = emulator.prog + *( uint32_t* )(emulator.rPile - *( uint32_t* )emulator.rProg);
+		emulator.rProg = emulator.prog + *( uint32_t* )(emulator.rPile + *( uint32_t* )emulator.rProg);
 	});
 
-	AddInstruction("JUMP_BACKWARD","UI32", [](){
+	AddInstruction("JUMP_BACKWARD","U32", [](){
 
-		emulator.rProg = emulator.prog + *( uint32_t* )(emulator.rPile-3);
+		emulator.rProg = emulator.prog + *( uint32_t* )(emulator.rPile);
 	});
 
-	AddInstruction("PULL_PILE","UI16", [](){
+	AddInstruction("PULL_PILE","U16", [](){
 
 		uint16_t* pilePush = ( uint16_t* )emulator.rProg;
 		emulator.rProg += SIZEOF_UI16;

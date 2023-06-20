@@ -144,18 +144,18 @@ void binPrograme( list<InstructToken> tokens, void* prog )
 					binInt<int64_t>( prog, token->param[i] );
 					prog += SIZEOF_I64;
 
-				} else if ( input[i] == "UI8") {
+				} else if ( input[i] == "U8") {
 					binInt<uint8_t>( prog, token->param[i] );
-					prog += SIZEOF_UI8;
-				} else if ( input[i] == "UI16") {
+					prog += SIZEOF_U8;
+				} else if ( input[i] == "U16") {
 					binInt<uint16_t>( prog, token->param[i] );
-					prog += SIZEOF_UI16;
-				} else if ( input[i] == "UI32") {
+					prog += SIZEOF_U16;
+				} else if ( input[i] == "U32") {
 					binInt<uint32_t>( prog, token->param[i] );
-					prog += SIZEOF_UI32;
-				} else if ( input[i] == "UI64") {
+					prog += SIZEOF_U32;
+				} else if ( input[i] == "U64") {
 					binInt<uint64_t>( prog, token->param[i] );
-					prog += SIZEOF_UI64;
+					prog += SIZEOF_U64;
 
 				} else if ( input[i] == "F") {
 					binFloat( prog, token->param[i] );
